@@ -21,3 +21,11 @@ _testmain.go
 
 *.exe
 *.test
+
+# IDE file & folder
+.idea
+*.iml
+
+# golang file & folder
+bin
+pkg
