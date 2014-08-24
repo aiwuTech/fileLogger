@@ -2,6 +2,8 @@ fileLogger
 ==========
 
 fileLogger是一个基于[Go](http://golang.org/)开发的可分文件的异步日志库
+
+[![Build Status](https://drone.io/github.com/aiwuTech/fileLogger/status.png)](https://drone.io/github.com/aiwuTech/fileLogger/latest)
 [![Go Walker](http://gowalker.org/api/v1/badge)](http://gowalker.org/github.com/aiwuTech/fileLogger)
 
 Features
