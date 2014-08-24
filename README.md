@@ -2,7 +2,7 @@ fileLogger
 ==========
 
 fileLogger是一个基于[Go](http://golang.org/)开发的可分文件的异步日志库
-
+[![Go Walker](http://gowalker.org/api/v1/badge)](http://gowalker.org/github.com/aiwuTech/fileLogger)
 
 Features
 --------
@@ -26,6 +26,17 @@ Update
 更新FileLogger使用"go get -u"命令
 
     go get -u github.com/aiwuTech/fileLogger
+
+Usage
+-----
+
+用法请参考[example](https://github.com/aiwuTech/fileLogger/tree/master/example)，持续更新中
+
+
+FAQ
+---
+
+如果使用过程中遇到任何问题，希望主动与[aiwuTech团队](https://github.com/aiwuTech/)联系，也可提交[Issues](https://github.com/aiwuTech/fileLogger/issues)，我们会及时解决
 
 
 License
