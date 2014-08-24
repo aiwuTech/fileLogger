@@ -5,10 +5,6 @@
 // DATE: 14-8-24 11:14
 package fileLogger
 
-import (
-	"log"
-)
-
 // Change the sizeSplit fileLogger's bak file count
 func (f *FileLogger) SetMaxFileCount(count int) int {
 	f.fileCount = count

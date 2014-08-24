@@ -144,8 +144,8 @@ func (f *FileLogger) initLoggerBySize() {
 		if !isExist(f.fileDir) {
 			os.Mkdir(f.fileDir, 0755)
 		}
-		f.logfile, _ = os.OpenFile(logFile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-		f.lg = log.New(f.logfile, f.prefix, log.LstdFlags|log.Lmicroseconds)
+		f.logFile, _ = os.OpenFile(logFile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+		f.lg = log.New(f.logFile, f.prefix, log.LstdFlags|log.Lmicroseconds)
 	} else {
 		f.split()
 	}
@@ -167,8 +167,8 @@ func (f *FileLogger) initLoggerByDaily() {
 		if !isExist(f.fileDir) {
 			os.Mkdir(f.fileDir, 0755)
 		}
-		f.logfile, _ = os.OpenFile(logFile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-		f.lg = log.New(f.logfile, f.prefix, log.LstdFlags|log.Lmicroseconds)
+		f.logFile, _ = os.OpenFile(logFile, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+		f.lg = log.New(f.logFile, f.prefix, log.LstdFlags|log.Lmicroseconds)
 	} else {
 		f.split()
 	}
@@ -217,8 +217,8 @@ func (f *FileLogger) split() {
 		}
 		os.Rename(logFile, logFileBak)
 
-		f.logfile, _ = os.Create(logFile)
-		f.lg = log.New(f.logfile, f.prefix, log.LstdFlags|log.Lmicroseconds)
+		f.logFile, _ = os.Create(logFile)
+		f.lg = log.New(f.logFile, f.prefix, log.LstdFlags|log.Lmicroseconds)
 
 	case SplitType_Daily:
 		logFileBak := logFile + "." + f.date.Format(DATEFORMAT)
@@ -244,7 +244,7 @@ func (f *FileLogger) split() {
 func (f *FileLogger) fileMonitor() {
 	defer func() {
 		if err := recover(); err != nil {
-			f.lg.Printf("FileLogger's FileMonitor() catch panic: %v\n", err.Error())
+			f.lg.Printf("FileLogger's FileMonitor() catch panic: %v\n", err)
 		}
 	}()
 
@@ -264,7 +264,7 @@ func (f *FileLogger) fileMonitor() {
 func (f *FileLogger) fileCheck() {
 	defer func() {
 		if err := recover(); err != nil {
-			f.lg.Printf("FileLogger's FileCheck() catch panic: %v\n", err.Error())
+			f.lg.Printf("FileLogger's FileCheck() catch panic: %v\n", err)
 		}
 	}()
 

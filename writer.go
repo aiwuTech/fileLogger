@@ -6,7 +6,6 @@
 package fileLogger
 
 import (
-	"sync"
 	"log"
 	"fmt"
 	"time"
@@ -20,7 +19,7 @@ const (
 func (f *FileLogger) logWriter() {
 	defer func() {
 		if err := recover(); err != nil {
-			log.Printf("FileLogger's LogWritter() catch panic: %v\n", err.Error())
+			log.Printf("FileLogger's LogWritter() catch panic: %v\n", err)
 		}
 	}()
 
