@@ -150,6 +150,7 @@ func (f *FileLogger) initLoggerBySize() {
 		f.split()
 	}
 
+	go f.logWriter()
 	go f.fileMonitor()
 }
 
@@ -173,6 +174,7 @@ func (f *FileLogger) initLoggerByDaily() {
 		f.split()
 	}
 
+	go f.logWriter()
 	go f.fileMonitor()
 }
 
