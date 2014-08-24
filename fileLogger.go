@@ -18,7 +18,8 @@ const (
 	DEFAULT_FILE_COUNT = 10
 	DEFAULT_FILE_SIZE  = 50
 	DEFAULT_FILE_UNIT  = MB
-	DEFAULT_LOG_SCAN   = 60
+	DEFAULT_LOG_SCAN   = 300
+	DEFAULT_LOG_SEQ    = 5000
 )
 
 type UNIT int64
@@ -54,12 +55,14 @@ type FileLogger struct {
 	lg      *log.Logger
 
 	logScan int64
+
+	logChan chan string
 }
 
 // NewDefaultLogger return a logger split by fileSize by default
 func NewDefaultLogger(fileDir, fileName string) *FileLogger {
 	return NewSizeLogger(fileDir, fileName, "",
-		DEFAULT_FILE_COUNT, DEFAULT_FILE_SIZE, DEFAULT_FILE_UNIT, DEFAULT_LOG_SCAN)
+		DEFAULT_FILE_COUNT, DEFAULT_FILE_SIZE, DEFAULT_FILE_UNIT, DEFAULT_LOG_SCAN, DEFAULT_LOG_SEQ)
 }
 
 // NewSizeLogger return a logger split by fileSize
@@ -70,8 +73,9 @@ func NewDefaultLogger(fileDir, fileName string) *FileLogger {
 // 		fileCount holds maxCount of bak file
 //		fileSize holds each of bak file's size
 // 		unit stands for kb, mb, gb, tb
-//      logScan after a logScan time will check fileLogger isMustSplit, default is 60s
-func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int64, unit UNIT, logScan int64) *FileLogger {
+//		logScan after a logScan time will check fileLogger isMustSplit, default is 300s
+func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int64, unit UNIT,
+	logScan int64, logSeq int) *FileLogger {
 	sizeLogger := &FileLogger{
 		splitType: SplitType_Size,
 		mu:        new(sync.RWMutex),
@@ -81,6 +85,7 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 		fileSize:  fileSize * int64(unit),
 		prefix:    prefix,
 		logScan:   logScan,
+		logChan:   make(chan string, logSeq),
 	}
 
 	sizeLogger.initLogger()
@@ -93,13 +98,15 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 // 		file directory
 // 		file name
 // 		log's prefix
-func NewDailyLogger(fileDir, fileName, prefix string) *FileLogger {
+func NewDailyLogger(fileDir, fileName, prefix string, logScan int64, logSeq int) *FileLogger {
 	dailyLogger := &FileLogger{
 		splitType: SplitType_Daily,
 		mu:        new(sync.RWMutex),
 		fileDir:   fileDir,
 		fileName:  fileName,
 		prefix:    prefix,
+		logScan:   logScan,
+		logChan:   make(chan string, logSeq),
 	}
 
 	dailyLogger.initLogger()
@@ -235,6 +242,11 @@ func (f *FileLogger) split() {
 
 // After some interval time, goto check the current fileLogger's size or date
 func (f *FileLogger) fileMonitor() {
+	defer func() {
+		if err := recover(); err != nil {
+			f.lg.Printf("FileLogger's FileMonitor() catch panic: %v\n", err.Error())
+		}
+	}()
 
 	//TODO  load logScan interval from config file
 	logScan := DEFAULT_LOG_SCAN
@@ -252,7 +264,7 @@ func (f *FileLogger) fileMonitor() {
 func (f *FileLogger) fileCheck() {
 	defer func() {
 		if err := recover(); err != nil {
-			f.lg.Printf("FileLogger catch panic in fileCheck: %v", err.Error())
+			f.lg.Printf("FileLogger's FileCheck() catch panic: %v\n", err.Error())
 		}
 	}()
 
