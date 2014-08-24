@@ -14,8 +14,11 @@ import (
 )
 
 const (
-	DATEFORMAT       = "2006-01-02"
-	DEFAULT_LOG_SCAN = 60
+	DATEFORMAT         = "2006-01-02"
+	DEFAULT_FILE_COUNT = 10
+	DEFAULT_FILE_SIZE  = 50
+	DEFAULT_FILE_UNIT  = MB
+	DEFAULT_LOG_SCAN   = 60
 )
 
 type UNIT int64
@@ -45,14 +48,18 @@ type FileLogger struct {
 	fileSize  int64
 	prefix    string
 
-	date    *time.Time
+	date *time.Time
+
 	logFile *os.File
 	lg      *log.Logger
+
+	logScan int64
 }
 
 // NewDefaultLogger return a logger split by fileSize by default
 func NewDefaultLogger(fileDir, fileName string) *FileLogger {
-	return NewSizeLogger(fileDir, fileName, "", 10, 50, MB)
+	return NewSizeLogger(fileDir, fileName, "",
+		DEFAULT_FILE_COUNT, DEFAULT_FILE_SIZE, DEFAULT_FILE_UNIT, DEFAULT_LOG_SCAN)
 }
 
 // NewSizeLogger return a logger split by fileSize
@@ -63,7 +70,8 @@ func NewDefaultLogger(fileDir, fileName string) *FileLogger {
 // 		fileCount holds maxCount of bak file
 //		fileSize holds each of bak file's size
 // 		unit stands for kb, mb, gb, tb
-func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int64, unit UNIT) *FileLogger {
+//      logScan after a logScan time will check fileLogger isMustSplit, default is 60s
+func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int64, unit UNIT, logScan int64) *FileLogger {
 	sizeLogger := &FileLogger{
 		splitType: SplitType_Size,
 		mu:        new(sync.RWMutex),
@@ -72,6 +80,7 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 		fileCount: fileCount,
 		fileSize:  fileSize * int64(unit),
 		prefix:    prefix,
+		logScan:   logScan,
 	}
 
 	sizeLogger.initLogger()
