@@ -32,8 +32,14 @@ func (f *FileLogger) SetLogSeq(logSeq int) {
 	//TODO How to change channel buffer size when channel has data
 }
 
+// SetLogScanInterval sets the ticker's interval
 func (f *FileLogger) SetLogScanInterval(interval int) {
 	//TODO How to change logScan Interval when ticker is running
+}
+
+// SetLogLevel sets the output log's Level: TRACE<INFO<WARN<ERROR<OFF
+func (f *FileLogger) SetLogLevel(level LEVEL) {
+	f.logLevel = level
 }
 
 // Copy from go sdk

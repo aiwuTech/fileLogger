@@ -10,12 +10,14 @@ import (
 	"fmt"
 	"time"
 	"os"
+	"runtime"
 )
 
 const (
 	DEFAULT_PRINT_INTERVAL = 300
 )
 
+// Receive logStr from f's logChan and print logstr to file
 func (f *FileLogger) logWriter() {
 	defer func() {
 		if err := recover(); err != nil {
@@ -38,6 +40,7 @@ func (f *FileLogger) logWriter() {
 	}
 }
 
+// print log
 func (f *FileLogger) p(str string) {
 	f.mu.RLock()
 	defer f.mu.RUnlock()
@@ -63,54 +66,55 @@ func (f *FileLogger) Println(v ...interface {}) {
 	f.logChan <- fmt.Sprintln(v...)
 }
 
-// Fatal is equivalent to f.Print() followed by a call to os.Exit(1).
-func (f *FileLogger) Fatal(v ...interface {}) {
-	f.logChan <- fmt.Sprint(v...)
-
-	//TODO current goroutine fatal, other goroutine what to do? what about logstr already in logchan?
-	os.Exit(1)
+//======================================================================================================================
+// Trace log
+func (f *FileLogger) Trace(format string, v ...interface{}) {
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	if f.logLevel <= TRACE {
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;35m[TRACE] "+format+" \033[0m ", v...)
+	}
 }
 
-// Fatalf is equivalent to f.Printf() followed by a call to os.Exit(1).
-func (f *FileLogger) Fatalf(format string, v ...interface {}) {
-	f.logChan <- fmt.Sprintf(format, v...)
-
-	//TODO current goroutine fatal, other goroutine what to do? what about logstr already in logchan?
-	os.Exit(1)
+// same with Trace()
+func (f *FileLogger) T(format string, v ...interface{}) {
+	f.Trace(format, v...)
 }
 
-// Fatalln is equivalent to f.Println() followed by a call to os.Exit(1).
-func (f *FileLogger) Fatalln(v ...interface {}) {
-	f.logChan <- fmt.Sprintln(v...)
-
-	//TODO current goroutine fatal, other goroutine what to do? what about logstr already in logchan?
-	os.Exit(1)
+// info log
+func (f *FileLogger) Info(format string, v ...interface{}) {
+	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	if f.logLevel <= INFO {
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("[INFO] "+format, v...)
+	}
 }
 
-// Panic is equivalent to f.Print() followed by a call to panic().
-func (f *FileLogger) Panic(v ...interface{}) {
-	s := fmt.Sprint(v...)
-	f.logChan <- s
-
-	//TODO current goroutine panic, other goroutine what to do? what about logstr already in logchan?
-	panic(s)
+// same with Info()
+func (f *FileLogger) I(format string, v ...interface{}) {
+	f.Info(format, v...)
 }
 
-// Panicf is equivalent to f.Printf() followed by a call to panic().
-func (f *FileLogger) Panicf(format string, v ...interface{}) {
-	s := fmt.Sprintf(format, v...)
-	f.logChan <- s
-
-	//TODO current goroutine panic, other goroutine what to do? what about logstr already in logchan?
-	panic(s)
+// warning log
+func (f *FileLogger) Warn(format string, v ...interface{}) {
+	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	if f.logLevel <= WARN {
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;33m[WARN] "+format+" \033[0m ", v...)
+	}
 }
 
-// Panicln is equivalent to f.Println() followed by a call to panic().
-func (f *FileLogger) Panicln(v ...interface{}) {
-	s := fmt.Sprintln(v...)
-	f.logChan <- s
-
-	//TODO current goroutine panic, other goroutine what to do? what about logstr already in logchan?
-	panic(s)
+// same with Warn()
+func (f *FileLogger)W(format string, v ...interface{}) {
+	f.Warn(format, v...)
 }
 
+// error log
+func (f *FileLogger) Error(format string, v ...interface{}) {
+	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	if f.logLevel <= ERROR {
+		f.logChan <- fmt.Sprintf("%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;4;31m[ERROR] "+format+" \033[0m ", v...)
+	}
+}
+
+// same with Error()
+func (f *FileLogger) E(format string, v ...interface{}) {
+	f.Error(format, v...)
+}

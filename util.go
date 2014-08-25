@@ -30,3 +30,8 @@ func fileSize(file string) int64 {
 
 	return f.Size()
 }
+
+// return file name without dir
+func shortFileName(file string) string {
+	return filepath.Base(file)
+}

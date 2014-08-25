@@ -20,6 +20,7 @@ const (
 	DEFAULT_FILE_UNIT  = MB
 	DEFAULT_LOG_SCAN   = 300
 	DEFAULT_LOG_SEQ    = 5000
+	DEFAULT_LOG_LEVEL  = TRACE
 )
 
 type UNIT int64
@@ -37,6 +38,16 @@ type SplitType byte
 const (
 	SplitType_Size SplitType = iota
 	SplitType_Daily
+)
+
+type LEVEL byte
+
+const (
+	TRACE LEVEL = iota
+	INFO
+	WARN
+	ERROR
+	OFF
 )
 
 type FileLogger struct {
@@ -57,6 +68,8 @@ type FileLogger struct {
 	logScan int64
 
 	logChan chan string
+
+	logLevel LEVEL
 }
 
 // NewDefaultLogger return a logger split by fileSize by default
@@ -150,6 +163,8 @@ func (f *FileLogger) initLoggerBySize() {
 		f.split()
 	}
 
+	f.SetLogLevel(DEFAULT_LOG_LEVEL)
+
 	go f.logWriter()
 	go f.fileMonitor()
 }
@@ -173,6 +188,8 @@ func (f *FileLogger) initLoggerByDaily() {
 	} else {
 		f.split()
 	}
+
+	f.SetLogLevel(DEFAULT_LOG_LEVEL)
 
 	go f.logWriter()
 	go f.fileMonitor()
