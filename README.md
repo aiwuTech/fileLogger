@@ -34,6 +34,11 @@ Usage
 
 用法请参考[example](https://github.com/aiwuTech/fileLogger/tree/master/example)，持续更新中
 
+API
+---
+
+请参考[Go Walker](https://gowalker.org/github.com/aiwuTech/fileLogger)
+
 
 FAQ
 ---

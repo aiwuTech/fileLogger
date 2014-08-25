@@ -1,5 +1,5 @@
 // Package: example
-// File: example1.go
+// File: example.go
 // Created by: mint(mint.zhao.chiu@gmail.com)_aiwuTech
 // Useage: example
 // DATE: 14-8-24 14:08
@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	TRACE  *fileLogger.FileLogger
-	INFO   *fileLogger.FileLogger
-	WARN   *fileLogger.FileLogger
-	ERROR  *fileLogger.FileLogger
+	logFile *fileLogger.FileLogger
+	TRACE   *fileLogger.FileLogger
+	INFO    *fileLogger.FileLogger
+	WARN    *fileLogger.FileLogger
+	ERROR   *fileLogger.FileLogger
 )
 
 func init() {
@@ -28,6 +29,9 @@ func init() {
 	INFO.SetPrefix("[INFO] ")
 	WARN.SetPrefix("[WARN] ")
 	ERROR.SetPrefix("[ERROR] ")
+
+	logFile = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "test.log")
+	logFile.SetLogLevel(fileLogger.TRACE) //trace log will not be print
 }
 
 func main() {
@@ -45,6 +49,9 @@ func main() {
 
 	wg.Add(1)
 	go errorTest(wg)
+
+	wg.Add(1)
+	go logTest(wg)
 
 	wg.Wait()
 }
@@ -81,4 +88,14 @@ func errorTest(wg *sync.WaitGroup) {
 	wg.Done()
 }
 
+func logTest(wg *sync.WaitGroup) {
 
+	for i := 1; i <= 1000; i++ {
+		logFile.T("This is the No[%v] TRACE log using fileLogger that written by aiwuTech.", i)
+		logFile.I("This is the No[%v] INFO log using fileLogger that written by aiwuTech.", i)
+		logFile.W("This is the No[%v] WARN log using fileLogger that written by aiwuTech.", i)
+		logFile.E("This is the No[%v] ERROR log using fileLogger that written by aiwuTech.", i)
+	}
+
+	wg.Done()
+}
