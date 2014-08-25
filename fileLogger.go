@@ -99,6 +99,7 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 		prefix:    prefix,
 		logScan:   logScan,
 		logChan:   make(chan string, logSeq),
+		logLevel:  DEFAULT_LOG_LEVEL,
 	}
 
 	sizeLogger.initLogger()
@@ -120,6 +121,7 @@ func NewDailyLogger(fileDir, fileName, prefix string, logScan int64, logSeq int)
 		prefix:    prefix,
 		logScan:   logScan,
 		logChan:   make(chan string, logSeq),
+		logLevel:  DEFAULT_LOG_LEVEL,
 	}
 
 	dailyLogger.initLogger()
@@ -163,8 +165,6 @@ func (f *FileLogger) initLoggerBySize() {
 		f.split()
 	}
 
-	f.SetLogLevel(DEFAULT_LOG_LEVEL)
-
 	go f.logWriter()
 	go f.fileMonitor()
 }
@@ -188,8 +188,6 @@ func (f *FileLogger) initLoggerByDaily() {
 	} else {
 		f.split()
 	}
-
-	f.SetLogLevel(DEFAULT_LOG_LEVEL)
 
 	go f.logWriter()
 	go f.fileMonitor()

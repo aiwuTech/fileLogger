@@ -19,10 +19,10 @@ var (
 
 func init() {
 
-	TRACE = fileLogger.NewDefaultLogger("/usr/local/bbsvr/log", "trace.log")
-	INFO = fileLogger.NewDefaultLogger("/usr/local/bbsvr/log", "info.log")
-	WARN = fileLogger.NewDefaultLogger("/usr/local/bbsvr/log", "warn.log")
-	ERROR = fileLogger.NewDefaultLogger("/usr/local/bbsvr/log", "error.log")
+	TRACE = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "trace.log")
+	INFO = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "info.log")
+	WARN = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "warn.log")
+	ERROR = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "error.log")
 
 	TRACE.SetPrefix("[TRACE] ")
 	INFO.SetPrefix("[INFO] ")
