@@ -295,3 +295,12 @@ func (f *FileLogger) fileCheck() {
 		f.split()
 	}
 }
+
+// passive to close fileLogger
+func (f *FileLogger) Close() error {
+
+	f.logChan.Close()
+	f.lg = nil
+
+	return f.logFile.Close()
+}
