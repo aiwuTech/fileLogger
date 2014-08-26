@@ -31,7 +31,7 @@ func init() {
 	ERROR.SetPrefix("[ERROR] ")
 
 	logFile = fileLogger.NewDefaultLogger("/usr/local/aiwuTech/log", "test.log")
-	logFile.SetLogLevel(fileLogger.TRACE) //trace log will not be print
+	logFile.SetLogLevel(fileLogger.INFO) //trace log will not be print
 }
 
 func main() {
