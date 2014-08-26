@@ -299,7 +299,7 @@ func (f *FileLogger) fileCheck() {
 // passive to close fileLogger
 func (f *FileLogger) Close() error {
 
-	f.logChan.Close()
+	close(f.logChan)
 	f.lg = nil
 
 	return f.logFile.Close()
