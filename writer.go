@@ -45,24 +45,36 @@ func (f *FileLogger) p(str string) {
 	defer f.mu.RUnlock()
 
 	f.lg.Output(2, str)
+	f.pc(str)
+}
+
+// print log in console, default log string wont be print in console
+// NOTICE: when console is on, the process will really slowly
+func (f *FileLogger) pc(str string) {
+	if f.logConsole {
+		log.Panicln(str)
+	}
 }
 
 // Printf throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
 func (f *FileLogger) Printf(format string, v ...interface {}) {
-	f.logChan <- fmt.Sprintf(format, v...)
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf(format, v...)
 }
 
 // Print throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Print.
 func (f *FileLogger) Print(v ...interface {}) {
-	f.logChan <- fmt.Sprint(v...)
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprint(v...)
 }
 
 // Println throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Println.
 func (f *FileLogger) Println(v ...interface {}) {
-	f.logChan <- fmt.Sprintln(v...)
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintln(v...)
 }
 
 //======================================================================================================================
@@ -81,7 +93,7 @@ func (f *FileLogger) T(format string, v ...interface{}) {
 
 // info log
 func (f *FileLogger) Info(format string, v ...interface{}) {
-	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= INFO {
 		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("[INFO] "+format, v...)
 	}
@@ -94,7 +106,7 @@ func (f *FileLogger) I(format string, v ...interface{}) {
 
 // warning log
 func (f *FileLogger) Warn(format string, v ...interface{}) {
-	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= WARN {
 		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;33m[WARN] "+format+" \033[0m ", v...)
 	}
@@ -107,7 +119,7 @@ func (f *FileLogger)W(format string, v ...interface{}) {
 
 // error log
 func (f *FileLogger) Error(format string, v ...interface{}) {
-	_, file, line, _ := runtime.Caller(1) //calldepth=3
+	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= ERROR {
 		f.logChan <- fmt.Sprintf("%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;4;31m[ERROR] "+format+" \033[0m ", v...)
 	}

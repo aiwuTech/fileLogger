@@ -70,6 +70,7 @@ type FileLogger struct {
 	logChan chan string
 
 	logLevel LEVEL
+	logConsole bool
 }
 
 // NewDefaultLogger return a logger split by fileSize by default
@@ -100,6 +101,7 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 		logScan:   logScan,
 		logChan:   make(chan string, logSeq),
 		logLevel:  DEFAULT_LOG_LEVEL,
+		logConsole: false,
 	}
 
 	sizeLogger.initLogger()
@@ -122,6 +124,7 @@ func NewDailyLogger(fileDir, fileName, prefix string, logScan int64, logSeq int)
 		logScan:   logScan,
 		logChan:   make(chan string, logSeq),
 		logLevel:  DEFAULT_LOG_LEVEL,
+		logConsole: false,
 	}
 
 	dailyLogger.initLogger()
