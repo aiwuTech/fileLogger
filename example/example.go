@@ -54,6 +54,12 @@ func main() {
 	go logTest(wg)
 
 	wg.Wait()
+
+	TRACE.Close()
+	INFO.Close()
+	WARN.Close()
+	ERROR.Close()
+	logFile.Close()
 }
 
 func traceTest(wg *sync.WaitGroup) {

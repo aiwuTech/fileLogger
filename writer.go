@@ -59,21 +59,21 @@ func (f *FileLogger) pc(str string) {
 // Printf throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
 func (f *FileLogger) Printf(format string, v ...interface {}) {
-	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf(format, v...)
 }
 
 // Print throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Print.
 func (f *FileLogger) Print(v ...interface {}) {
-	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprint(v...)
 }
 
 // Println throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Println.
 func (f *FileLogger) Println(v ...interface {}) {
-	_, file, line, _ := runtime.Caller(2) //calldepth=3
+	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintln(v...)
 }
 
