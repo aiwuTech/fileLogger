@@ -69,7 +69,7 @@ type FileLogger struct {
 
 	logChan chan string
 
-	logLevel LEVEL
+	logLevel   LEVEL
 	logConsole bool
 }
 
@@ -91,16 +91,16 @@ func NewDefaultLogger(fileDir, fileName string) *FileLogger {
 func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int64, unit UNIT,
 	logScan int64, logSeq int) *FileLogger {
 	sizeLogger := &FileLogger{
-		splitType: SplitType_Size,
-		mu:        new(sync.RWMutex),
-		fileDir:   fileDir,
-		fileName:  fileName,
-		fileCount: fileCount,
-		fileSize:  fileSize * int64(unit),
-		prefix:    prefix,
-		logScan:   logScan,
-		logChan:   make(chan string, logSeq),
-		logLevel:  DEFAULT_LOG_LEVEL,
+		splitType:  SplitType_Size,
+		mu:         new(sync.RWMutex),
+		fileDir:    fileDir,
+		fileName:   fileName,
+		fileCount:  fileCount,
+		fileSize:   fileSize * int64(unit),
+		prefix:     prefix,
+		logScan:    logScan,
+		logChan:    make(chan string, logSeq),
+		logLevel:   DEFAULT_LOG_LEVEL,
 		logConsole: false,
 	}
 
@@ -116,14 +116,14 @@ func NewSizeLogger(fileDir, fileName, prefix string, fileCount int, fileSize int
 // 		log's prefix
 func NewDailyLogger(fileDir, fileName, prefix string, logScan int64, logSeq int) *FileLogger {
 	dailyLogger := &FileLogger{
-		splitType: SplitType_Daily,
-		mu:        new(sync.RWMutex),
-		fileDir:   fileDir,
-		fileName:  fileName,
-		prefix:    prefix,
-		logScan:   logScan,
-		logChan:   make(chan string, logSeq),
-		logLevel:  DEFAULT_LOG_LEVEL,
+		splitType:  SplitType_Daily,
+		mu:         new(sync.RWMutex),
+		fileDir:    fileDir,
+		fileName:   fileName,
+		prefix:     prefix,
+		logScan:    logScan,
+		logChan:    make(chan string, logSeq),
+		logLevel:   DEFAULT_LOG_LEVEL,
 		logConsole: false,
 	}
 

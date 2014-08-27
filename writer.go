@@ -1,15 +1,15 @@
 // Package: fileLogger
 // File: writer.go
 // Created by: mint(mint.zhao.chiu@gmail.com)_aiwuTech
-// Useage: 
+// Useage:
 // DATE: 14-8-24 12:40
 package fileLogger
 
 import (
-	"log"
 	"fmt"
-	"time"
+	"log"
 	"runtime"
+	"time"
 )
 
 const (
@@ -30,11 +30,12 @@ func (f *FileLogger) logWriter() {
 	seqTimer := time.NewTicker(time.Duration(printInterval) * time.Second)
 	for {
 		select {
-		case str := <- f.logChan:
+		case str := <-f.logChan:
 
 			f.p(str)
-		case <- seqTimer.C:
-			log.Printf("================ LOG SEQ SIZE:%v ==================\n", len(f.logChan))
+		case <-seqTimer.C:
+			log.Printf()
+			f.p(fmt.Sprintf("================ LOG SEQ SIZE:%v ==================\n", len(f.logChan)))
 		}
 	}
 }
@@ -61,21 +62,21 @@ func (f *FileLogger) pc(str string) {
 
 // Printf throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Printf.
-func (f *FileLogger) Printf(format string, v ...interface {}) {
+func (f *FileLogger) Printf(format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf(format, v...)
 }
 
 // Print throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Print.
-func (f *FileLogger) Print(v ...interface {}) {
+func (f *FileLogger) Print(v ...interface{}) {
 	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprint(v...)
 }
 
 // Println throw logstr to channel to print to the logger.
 // Arguments are handled in the manner of fmt.Println.
-func (f *FileLogger) Println(v ...interface {}) {
+func (f *FileLogger) Println(v ...interface{}) {
 	_, file, line, _ := runtime.Caller(1) //calldepth=2
 	f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintln(v...)
 }
@@ -98,7 +99,7 @@ func (f *FileLogger) T(format string, v ...interface{}) {
 func (f *FileLogger) Info(format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= INFO {
-		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;35m[INFO] "+format, v...)
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;35m[INFO] "+format+" \033[0m ", v...)
 	}
 }
 
@@ -116,7 +117,7 @@ func (f *FileLogger) Warn(format string, v ...interface{}) {
 }
 
 // same with Warn()
-func (f *FileLogger)W(format string, v ...interface{}) {
+func (f *FileLogger) W(format string, v ...interface{}) {
 	f.Warn(format, v...)
 }
 
