@@ -52,7 +52,7 @@ func (f *FileLogger) p(str string) {
 // NOTICE: when console is on, the process will really slowly
 func (f *FileLogger) pc(str string) {
 	if f.logConsole {
-		log.Panicln(str)
+		log.Println(str)
 	}
 }
 
