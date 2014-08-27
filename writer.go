@@ -82,7 +82,7 @@ func (f *FileLogger) Println(v ...interface {}) {
 func (f *FileLogger) Trace(format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= TRACE {
-		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("[TRACE] "+format+" \033[0m ", v...)
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[32m[TRACE] "+format+" \033[0m ", v...)
 	}
 }
 
