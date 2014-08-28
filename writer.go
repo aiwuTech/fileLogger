@@ -124,7 +124,7 @@ func (f *FileLogger) W(format string, v ...interface{}) {
 func (f *FileLogger) Error(format string, v ...interface{}) {
 	_, file, line, _ := runtime.Caller(2) //calldepth=3
 	if f.logLevel <= ERROR {
-		f.logChan <- fmt.Sprintf("%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;4;31m[ERROR] "+format+" \033[0m ", v...)
+		f.logChan <- fmt.Sprintf("[%v:%v]", shortFileName(file), line) + fmt.Sprintf("\033[1;4;31m[ERROR] "+format+" \033[0m ", v...)
 	}
 }
 
