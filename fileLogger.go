@@ -151,11 +151,11 @@ func (f *FileLogger) initLoggerBySize() {
 
 	logFile := joinFilePath(f.fileDir, f.fileName)
 	for i := 1; i <= f.fileCount; i++ {
-		if isExist(logFile + "." + strconv.Itoa(i)) {
-			f.suffix = i
+		if !isExist(logFile + "." + strconv.Itoa(i)) {
+			break
 		}
 
-		break
+		f.suffix = i
 	}
 
 	if !f.isMustSplit() {
